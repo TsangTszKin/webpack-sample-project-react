@@ -1,6 +1,7 @@
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const path = require('path')
 
 module.exports = {
     devtool: 'eval-source-map',
@@ -14,6 +15,12 @@ module.exports = {
         historyApiFallback: true,//不跳转
         inline: true,//实时刷新
         hot: true
+    },
+    resolve: {
+        alias: {
+            '@': path.resolve("app")
+        },
+        extensions: ['*', '.js', '.jsx', '.json', '.less', '.css']
     },
     module: {
         rules: [
