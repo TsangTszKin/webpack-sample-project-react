@@ -54,6 +54,10 @@ module.exports = {
             root: __dirname,
             verbose: true,
             dry: false
-        })
+        }),new webpack.DefinePlugin({
+            'process.env': {
+                'http_env': JSON.stringify(process.env.http_env)
+            }
+        }),
     ]
 }

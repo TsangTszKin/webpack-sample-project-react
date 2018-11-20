@@ -15,9 +15,10 @@ import styles from './Greeter.css';//导入
 
 class Greeter extends Component {
     render() {
+        console.log(process.env)
         return (
             <div className={styles.root}>
-                {config.greetText}
+                {config.greetText} // 当前的环境是{process.env.http_env}
             </div>
         );
     }

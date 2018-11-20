@@ -58,6 +58,11 @@ module.exports = {
         new webpack.HotModuleReplacementPlugin(),//热加载插件
         new webpack.optimize.OccurrenceOrderPlugin(),
         // new webpack.optimize.UglifyJsPlugin(),
-        new ExtractTextPlugin("style.css")
+        new ExtractTextPlugin("style.css"),
+        new webpack.DefinePlugin({
+            'process.env': {
+                'http_env': JSON.stringify(process.env.http_env)
+            }
+        }),
     ],
 }

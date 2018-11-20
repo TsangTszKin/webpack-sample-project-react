@@ -5,8 +5,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack",
-    "server": "webpack-dev-server --open",
-    "build": "cross-env NODE_ENV=production webpack --config ./webpack.production.config.js --progress"
+    "server": "cross-env NODE_ENV=development http_env=development webpack-dev-server --open",
+    "build": "cross-env NODE_ENV=production http_env=production webpack --config ./webpack.production.config.js --progress"
   },
   "main": "index.js",
   "dependencies": {
