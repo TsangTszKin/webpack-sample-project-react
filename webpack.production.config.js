@@ -2,15 +2,18 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CleanWebpackPlugin = require("clean-webpack-plugin");
-const path = require('path')
+const path = require('path');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const autoprefixer = require('autoprefixer');
 
 module.exports = {
-    entry: __dirname + "/src/main.js", //已多次提及的唯一入口文件
+    devtool: "null",
+    entry: __dirname + "/src/index.js", //已多次提及的唯一入口文件
     output: {
         path: __dirname + "/dist", //打包后的文件存放的地方
-        filename: "bundle-[hash].js" //打包后输出文件的文件名
+        filename: "js/bundle.js" //打包后输出文件的文件名
     },
-    devtool: "null",
     resolve: {
         alias: {
             '@': path.resolve("src")
@@ -25,39 +28,76 @@ module.exports = {
                     loader: "babel-loader"
                 },
                 exclude: /node_modules/
-            }, {
-                test: /\.css$/,
-                use: ExtractTextPlugin.extract({
-                    fallback: "style-loader",
-                    use: [{
-                        loader: "css-loader",
+            },
+            {
+                test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
+                loader: 'url-loader',
+                options: {
+                    limit: 10000,
+                    outputPath: "images"
+                }
+            },
+            {
+                test: /(\.less|\.css)$/,
+                use: [
+                    MiniCssExtractPlugin.loader,
+                    {
+                        loader: 'css-loader',
                         options: {
-                            modules: true
+                            importLoaders: 1,
+                            minimize: {
+                                autoprefixer: {
+                                    add: true,
+                                    remove: true,
+                                    browsers: ['last 2 versions'],
+                                },
+                                discardComments: {
+                                    removeAll: true,
+                                },
+                                discardUnused: false,
+                                mergeIdents: false,
+                                reduceIdents: false,
+                                safe: true
+                            }
                         }
-                    }, {
-                        loader: "postcss-loader"
-                    }],
-                })
+                    },
+                    {
+                        loader: 'less-loader',
+                        options: {
+                            javascriptEnabled: true
+                        }
+                    }
+                ]
             }
         ]
     },
     plugins: [
+        new CleanWebpackPlugin(['dist', 'build'], { root: __dirname, verbose: true, dry: false }),
         new webpack.BannerPlugin('版权所有，翻版必究'),
-        new HtmlWebpackPlugin({
-            template: __dirname + "/src/index.tmpl.html" //new 一个这个插件的实例，并传入相关的参数
+        new HtmlWebpackPlugin({//此插件可以配置多入口多页面
+            template: __dirname + "/src/index.tmpl.html",//一个这个插件的实例，并传入相关的参数
+            inject: true,
+            favicon: path.resolve('favicon.ico'),
+            minify: {
+                collapseWhitespace: true,
+            }
         }),
         new webpack.HotModuleReplacementPlugin(),
         new webpack.optimize.OccurrenceOrderPlugin(),
         // new webpack.optimize.UglifyJsPlugin(), //热加载插件
-        new ExtractTextPlugin("style.css"),
-        new CleanWebpackPlugin('build/*.*', {
-            root: __dirname,
-            verbose: true,
-            dry: false
-        }),new webpack.DefinePlugin({
+        // new ExtractTextPlugin("css/style.css"),
+        new webpack.DefinePlugin({
             'process.env': {
                 'http_env': JSON.stringify(process.env.http_env)
             }
         }),
+        new MiniCssExtractPlugin({
+            filename: 'css/style.css',
+            chunkFilename: 'css/style.[contenthash:5].css'
+        }),
+        new CopyWebpackPlugin([{
+            from: path.join(__dirname, 'src/static'),
+            to: path.join(__dirname, 'dist', 'static')
+        }])
     ]
 }

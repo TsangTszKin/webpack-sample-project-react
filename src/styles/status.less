@@ -1,0 +1,38 @@
+@online: #00A854;
+@ing: #C9BFBF;
+@ready: #0E77D1;
+@error: #FFBF00;
+.status {
+    height: 21px;
+    position: relative;
+    min-width: 62px;
+    .status-label {
+        height: 8px;
+        width: 8px;
+        border-radius: 50%;
+        position: absolute;
+        top: 50%;
+        left: 3px;
+        margin-top: -4px;
+    }
+    .ing {
+        background-color: @ing;
+    }
+    .online {
+        background-color: @online;
+    }
+    .ready {
+        background-color: @ready;
+    }
+    .error {
+        background-color: @error;
+    }
+    .status-name {
+        position: absolute;
+        left: 17px;
+        color: @ing;
+    }
+    .status-name-active {
+        color: #000;
+    }
+}
